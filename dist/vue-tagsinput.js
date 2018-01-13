@@ -42,15 +42,15 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	module.exports = __webpack_require__(1);
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	
 	/* styles */
@@ -70,9 +70,9 @@
 	module.exports = Component.exports
 
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
@@ -82,23 +82,10 @@
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
 	var update = __webpack_require__(5)("5df4de20", content, true);
-	// Hot Module Replacement
-	if(false) {
-	 // When the styles change, update the <style> tags
-	 if(!content.locals) {
-	   module.hot.accept("!!../node_modules/css-loader/index.js?minimize!../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-4a2297bc&scoped=true!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./input.vue", function() {
-	     var newContent = require("!!../node_modules/css-loader/index.js?minimize!../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-4a2297bc&scoped=true!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./input.vue");
-	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-	     update(newContent);
-	   });
-	 }
-	 // When the module is disposed, remove the <style> tags
-	 module.hot.dispose(function() { update(); });
-	}
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	// imports
@@ -110,9 +97,9 @@
 	// exports
 
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
@@ -166,9 +153,9 @@
 	};
 
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/*
 	  MIT License http://www.opensource.org/licenses/mit-license.php
@@ -276,27 +263,6 @@
 	  }
 	}
 	
-	function listToStyles (parentId, list) {
-	  var styles = []
-	  var newStyles = {}
-	  for (var i = 0; i < list.length; i++) {
-	    var item = list[i]
-	    var id = item[0]
-	    var css = item[1]
-	    var media = item[2]
-	    var sourceMap = item[3]
-	    var part = { css: css, media: media, sourceMap: sourceMap }
-	    if (!newStyles[id]) {
-	      part.id = parentId + ':0'
-	      styles.push(newStyles[id] = { id: id, parts: [part] })
-	    } else {
-	      part.id = parentId + ':' + newStyles[id].parts.length
-	      newStyles[id].parts.push(part)
-	    }
-	  }
-	  return styles
-	}
-	
 	function createStyleElement () {
 	  var styleElement = document.createElement('style')
 	  styleElement.type = 'text/css'
@@ -307,12 +273,20 @@
 	function addStyle (obj /* StyleObjectPart */) {
 	  var update, remove
 	  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
-	  var hasSSR = styleElement != null
 	
-	  // if in production mode and style is already provided by SSR,
-	  // simply do nothing.
-	  if (hasSSR && isProduction) {
-	    return noop
+	  if (styleElement) {
+	    if (isProduction) {
+	      // has SSR styles and in production mode.
+	      // simply do nothing.
+	      return noop
+	    } else {
+	      // has SSR styles but in dev mode.
+	      // for some reason Chrome can't handle source map in server-rendered
+	      // style tags - source maps in <style> only works if the style tag is
+	      // created and inserted dynamically. So we remove the server rendered
+	      // styles and inject new ones.
+	      styleElement.parentNode.removeChild(styleElement)
+	    }
 	  }
 	
 	  if (isOldIE) {
@@ -323,16 +297,14 @@
 	    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
 	  } else {
 	    // use multi-style-tag mode in all other cases
-	    styleElement = styleElement || createStyleElement()
+	    styleElement = createStyleElement()
 	    update = applyToTag.bind(null, styleElement)
 	    remove = function () {
 	      styleElement.parentNode.removeChild(styleElement)
 	    }
 	  }
 	
-	  if (!hasSSR) {
-	    update(obj)
-	  }
+	  update(obj)
 	
 	  return function updateStyle (newObj /* StyleObjectPart */) {
 	    if (newObj) {
@@ -402,9 +374,9 @@
 	}
 
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/**
 	 * Translates the list format produced by css-loader into something
@@ -435,9 +407,9 @@
 	}
 
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = function normalizeComponent (
 	  rawScriptExports,
@@ -488,9 +460,9 @@
 	}
 
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -616,9 +588,9 @@
 	  }
 	};
 
-/***/ },
+/***/ }),
 /* 9 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
@@ -663,9 +635,9 @@
 	module.exports = props;
 
 
-/***/ },
+/***/ }),
 /* 10 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
@@ -687,9 +659,9 @@
 	  placeholder: 'placeholder'
 	};
 
-/***/ },
+/***/ }),
 /* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	
 	/* styles */
@@ -709,9 +681,9 @@
 	module.exports = Component.exports
 
 
-/***/ },
+/***/ }),
 /* 12 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
@@ -721,23 +693,10 @@
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
 	var update = __webpack_require__(5)("77babb28", content, true);
-	// Hot Module Replacement
-	if(false) {
-	 // When the styles change, update the <style> tags
-	 if(!content.locals) {
-	   module.hot.accept("!!../node_modules/css-loader/index.js?minimize!../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-bf3d33e8&scoped=true!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tag.vue", function() {
-	     var newContent = require("!!../node_modules/css-loader/index.js?minimize!../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-bf3d33e8&scoped=true!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tag.vue");
-	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-	     update(newContent);
-	   });
-	 }
-	 // When the module is disposed, remove the <style> tags
-	 module.hot.dispose(function() { update(); });
-	}
 
-/***/ },
+/***/ }),
 /* 13 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	// imports
@@ -749,9 +708,9 @@
 	// exports
 
 
-/***/ },
+/***/ }),
 /* 14 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -814,15 +773,15 @@
 	  }
 	};
 
-/***/ },
+/***/ }),
 /* 15 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = "data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjE2IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0xOSA2LjQxTDE3LjU5IDUgMTIgMTAuNTkgNi40MSA1IDUgNi40MSAxMC41OSAxMiA1IDE3LjU5IDYuNDEgMTkgMTIgMTMuNDEgMTcuNTkgMTkgMTkgMTcuNTkgMTMuNDEgMTJ6Ii8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+Cjwvc3ZnPg=="
 
-/***/ },
+/***/ }),
 /* 16 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
 	  return _c('span', {
@@ -842,9 +801,9 @@
 	  }) : _vm._e()])
 	},staticRenderFns: []}
 
-/***/ },
+/***/ }),
 /* 17 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	
 	/* styles */
@@ -864,9 +823,9 @@
 	module.exports = Component.exports
 
 
-/***/ },
+/***/ }),
 /* 18 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
@@ -876,23 +835,10 @@
 	if(content.locals) module.exports = content.locals;
 	// add the styles to the DOM
 	var update = __webpack_require__(5)("f1542044", content, true);
-	// Hot Module Replacement
-	if(false) {
-	 // When the styles change, update the <style> tags
-	 if(!content.locals) {
-	   module.hot.accept("!!../node_modules/css-loader/index.js?minimize!../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-5643ad75&scoped=true!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./typing.vue", function() {
-	     var newContent = require("!!../node_modules/css-loader/index.js?minimize!../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-5643ad75&scoped=true!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./typing.vue");
-	     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-	     update(newContent);
-	   });
-	 }
-	 // When the module is disposed, remove the <style> tags
-	 module.hot.dispose(function() { update(); });
-	}
 
-/***/ },
+/***/ }),
 /* 19 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(4)();
 	// imports
@@ -904,9 +850,9 @@
 	// exports
 
 
-/***/ },
+/***/ }),
 /* 20 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -1035,9 +981,9 @@
 	  }
 	};
 
-/***/ },
+/***/ }),
 /* 21 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
 	  return _c('span', {
@@ -1063,7 +1009,7 @@
 	      "type": "text"
 	    },
 	    domProps: {
-	      "value": _vm._s(_vm.text)
+	      "value": (_vm.text)
 	    },
 	    on: {
 	      "mousedown": _vm.preventNativeActive,
@@ -1077,9 +1023,9 @@
 	  }), _vm._v(" "), (!_vm.typing) ? _vm._t("default") : _vm._e()], 2)
 	},staticRenderFns: []}
 
-/***/ },
+/***/ }),
 /* 22 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
 	  return _c('div', {
@@ -1119,6 +1065,6 @@
 	  })], 2)
 	},staticRenderFns: []}
 
-/***/ }
+/***/ })
 /******/ ])));
 //# sourceMappingURL=vue-tagsinput.js.map
