@@ -2,7 +2,6 @@
   <span :class="klass.gap" @click="$emit('click')">
     <input type="text"
         :class="klass.input"
-        :style="{width: baseWidth + charLen(text) + 'ch'}"
         ref="input"
         v-model="text"
         @mousedown="preventNativeActive"
@@ -43,9 +42,6 @@ export default {
     }
   },
   computed: {
-    baseWidth() {
-      return this.typing ? 2 : 0
-    },
     klass() {
       return this.$parent.klass
     },
@@ -76,13 +72,6 @@ export default {
         this.text = ''
         return trimText
       }
-    },
-    charLen(str) {
-      let charNum = 0
-      for (let i = 0; i < str.length; ++i) {
-        charNum += str.charCodeAt(i) > 127 ? 2 : 1
-      }
-      return charNum
     },
     keyPress(e) {
       let $input = this.$refs.input
